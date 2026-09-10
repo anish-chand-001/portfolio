@@ -1,26 +1,60 @@
+
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* =========================
+   STARDOM
+========================= */
+
+@font-face {
+  font-family: "Stardom";
+  src: url("/fonts/stardom/Stardom-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* =========================
+   SATOSHI
+========================= */
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi/Satoshi-Medium.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+/* =========================
+   PANCHANG
+========================= */
+
+@font-face {
+  font-family: "Panchang";
+  src: url("/fonts/panchang/Panchang-Medium.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
+
+
+
+/* =========================
+   GLOBAL
+========================= */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #001621;
+  font-family: "Satoshi", sans-serif;
+  background-color:#f2efe7
+}
+
+.stardom {
+  font-family: "Stardom", sans-serif;
+}
+
+.panchang {
+  font-family: "Panchang", sans-serif;
 }
