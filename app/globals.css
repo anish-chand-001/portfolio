@@ -58,3 +58,16 @@ body {
 .panchang {
   font-family: "Panchang", sans-serif;
 }
+
+/* =========================
+   UTILITIES
+========================= */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

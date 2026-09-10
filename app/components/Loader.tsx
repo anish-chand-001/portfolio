@@ -57,17 +57,20 @@ export default function Loader() {
     <div
       ref={loaderRef}
       className="fixed inset-0 z-[9999] flex pointer-events-none"
+      role="status"
+      aria-label="Loading page content"
     >
       <div
         ref={greetingRef}
-        className="absolute inset-0 z-10 flex items-center justify-center text-[#001621]
+        aria-live="polite"
+        className="absolute inset-0 z-10 flex items-center justify-center text-[#ff4103]
         text-4xl sm:text-5xl md:text-7xl font-medium tracking-tight panchang text-center px-4"
       />
 
       {Array.from({ length: 10 }).map((_, index) => (
         <div
           key={index}
-          className={`loader-bar h-full flex-1 bg-[#ff4103] outline outline-[1px] outline-[#ff4103] ${
+          className={`loader-bar h-full flex-1 bg-[#001621] outline outline-[1px] outline-[#001621] ${
             index > 5 ? "hidden md:block" : "block"
           }`}
         />
