@@ -32,9 +32,9 @@ const skillsData = [
 ];
 
 const Homepage = () => {
-  const [activeSkill, setActiveSkill] = useState("frontend");
+  const [activeSkill, setActiveSkill] = useState<string | null>("frontend");
 
-  const toggleSkill = (id) => {
+  const toggleSkill = (id:string) => {
     setActiveSkill(activeSkill === id ? null : id);
   };
 
