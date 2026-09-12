@@ -1,9 +1,11 @@
+
+
 "use client";
 
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import Footer from "../components/Footer"; // Import your newly separated component
+import Footer from "./Footer"; // Assuming relative path is fixed
 
 const projects = [
   {
@@ -14,7 +16,7 @@ const projects = [
       "A full-stack AI interview preparation platform enabling resume-based interview generation, AI-driven response evaluation, and personalized performance analytics.",
     image: "/projects/smartMock-AI.png",
     bgColor: "bg-zinc-300",
-    link: "#",
+    link: "https://smartmockai-4phv.onrender.com",
   },
   {
     id: "02",
@@ -24,7 +26,7 @@ const projects = [
       "A production-ready pharmaceutical brand website focusing on responsive design, SEO optimization, and high-performance rendering architecture.",
     image: "/projects/biogenx.png",
     bgColor: "bg-zinc-500",
-    link: "#",
+    link: "https://biogenx.in",
   },
   {
     id: "03",
@@ -34,7 +36,7 @@ const projects = [
       "A full-stack e-commerce system featuring a high-conversion storefront, dynamic cart/wishlist management, and a dedicated admin console.",
     image: "/projects/piku-crochet.png",
     bgColor: "bg-zinc-700",
-    link: "#",
+    link: "https://pikucrochet.vercel.app",
   },
 ];
 
@@ -48,10 +50,12 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
   const leftColRef = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const mobileFooterRef = useRef<HTMLDivElement>(null);
 
   const rightColumnProjects = [...projects].reverse();
   const totalProjects = projects.length;
 
+  // 1. DESKTOP ANIMATION LOGIC
   useEffect(() => {
     const leftCol = leftColRef.current;
     const rightCol = rightColRef.current;
@@ -100,7 +104,6 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
             overwrite: "auto",
           });
 
-          // ADDED: Fade out the close button when footer is visible
           gsap.to(closeBtnRef.current, {
             opacity: footerProgress.value > 0.05 ? 0 : 1,
             pointerEvents: footerProgress.value > 0.05 ? "none" : "auto",
@@ -113,7 +116,6 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
           projectProgress.value = Math.min(Math.max(projectProgress.value + delta, 0), 1);
           updateColumns(projectProgress.value);
           
-          // ADDED: Make sure close button is visible during projects
           gsap.to(closeBtnRef.current, {
             opacity: 1,
             pointerEvents: "auto",
@@ -133,20 +135,154 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
     return () => mm.revert();
   }, [totalProjects]);
 
+  // 2. MOBILE & IPAD CLOSE BUTTON FADE LOGIC
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (window.innerWidth < 1280 && closeBtnRef.current) {
+            gsap.to(closeBtnRef.current, {
+              opacity: entry.isIntersecting ? 0 : 1,
+              pointerEvents: entry.isIntersecting ? "none" : "auto",
+              duration: 0.3,
+              overwrite: "auto",
+            });
+          }
+        });
+      },
+      { root: null, threshold: 0.15 }
+    );
+
+    if (mobileFooterRef.current) {
+      observer.observe(mobileFooterRef.current);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => observer.disconnect();
+  }, []);
+
+  // 3. THE EXIT ANIMATION CHOREOGRAPHY
+  // const handleAnimatedClose = () => {
+  //   if (!containerRef.current) return;
+
+  //   // Lock interactions so the user can't break the animation by clicking/scrolling
+  //   containerRef.current.style.pointerEvents = "none";
+
+  //   const tl = gsap.timeline({
+  //     onComplete: onClose, // Fires the actual unmount only after animation finishes
+  //   });
+
+  //   if (window.innerWidth >= 1280) {
+  //     // --- DESKTOP OUTRO ---
+  //     const maxIndex = projects.length - 1;
+
+  //     // Drop footer if it was pulled up
+  //     tl.to(desktopMasterRef.current, { y: 0, duration: 0.8, ease: "power3.inOut" }, 0);
+      
+  //     // Reverse columns to original positions
+  //     tl.to(leftColRef.current, { yPercent: 0, duration: 1.2, ease: "power3.inOut" }, 0);
+  //     tl.to(rightColRef.current, { yPercent: -(maxIndex * 100), duration: 1.2, ease: "power3.inOut" }, 0);
+      
+  //     // Fade container to reveal Hero
+  //     tl.to(containerRef.current, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 0.7);
+
+  //   } else {
+  //     // --- MOBILE OUTRO ---
+  //     // Slide header up
+  //     tl.to(".mobile-header", { y: -50, opacity: 0, duration: 0.5, ease: "power3.in" }, 0);
+      
+  //     // Slide images out to the left
+  //     tl.to(".mobile-image", { x: "-100vw", opacity: 0, stagger: 0.05, duration: 0.8, ease: "power3.inOut" }, 0);
+      
+  //     // Slide details out to the right
+  //     tl.to(".mobile-details", { x: "100vw", opacity: 0, stagger: 0.05, duration: 0.8, ease: "power3.inOut" }, 0);
+      
+  //     // Slide footer down
+  //     tl.to(mobileFooterRef.current, { y: 100, opacity: 0, duration: 0.5, ease: "power3.in" }, 0);
+      
+  //     // Fade container to reveal Hero
+  //     tl.to(containerRef.current, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 0.5);
+  //   }
+  // };
+
+ // 3. THE EXIT ANIMATION CHOREOGRAPHY
+  const handleAnimatedClose = () => {
+    if (!containerRef.current || !closeBtnRef.current) return;
+
+    // Lock interactions so the user can't break the animation by clicking/scrolling
+    containerRef.current.style.pointerEvents = "none";
+
+    const tl = gsap.timeline({
+      onComplete: onClose, // Fires the actual unmount only after animation finishes
+    });
+
+    // ==========================================
+    // FIXED: ISOLATED TACTILE MOBILE MICRO-ANIMATION
+    // ==========================================
+    
+    // 1. Target the whole button for the background and press effect
+    tl.to(closeBtnRef.current, { 
+      backgroundColor: "#ff4103", 
+      scale: 0.95, // Slightly softer scale for the wider pill shape
+      duration: 0.15,
+      ease: "power2.out" 
+    }, 0); 
+
+    // 2. Target ONLY the SVG icon for the rotation
+    const icon = closeBtnRef.current.querySelector("svg");
+    if (icon) {
+      tl.to(icon, {
+        rotation: 90,
+        duration: 0.15,
+        ease: "power2.out"
+      }, 0);
+    }
+
+    if (window.innerWidth >= 1280) {
+      // --- DESKTOP OUTRO ---
+      const maxIndex = projects.length - 1;
+
+      tl.to(desktopMasterRef.current, { y: 0, duration: 0.8, ease: "power3.inOut" }, 0.15);
+      tl.to(leftColRef.current, { yPercent: 0, duration: 1.2, ease: "power3.inOut" }, 0.15);
+      tl.to(rightColRef.current, { yPercent: -(maxIndex * 100), duration: 1.2, ease: "power3.inOut" }, 0.15);
+      tl.to(containerRef.current, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 0.85);
+
+    } else {
+      // --- MOBILE OUTRO ---
+      tl.to(".mobile-header", { y: -50, opacity: 0, duration: 0.5, ease: "power3.in" }, 0.15);
+      tl.to(".mobile-image", { x: "-100vw", opacity: 0, stagger: 0.05, duration: 0.8, ease: "power3.inOut" }, 0.15);
+      tl.to(".mobile-details", { x: "100vw", opacity: 0, stagger: 0.05, duration: 0.8, ease: "power3.inOut" }, 0.15);
+      
+      if (mobileFooterRef.current) {
+        tl.to(mobileFooterRef.current, { y: 100, opacity: 0, duration: 0.5, ease: "power3.in" }, 0.15);
+      }
+      
+      tl.to(containerRef.current, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 0.65);
+    }
+  };
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-50 w-full min-h-screen bg-[#F4F4F2]"
+      className="absolute inset-0 z-50 w-full min-h-screen bg-[#F4F4F2] overflow-x-hidden"
     >
       <button
         ref={closeBtnRef}
-        onClick={onClose}
+        onClick={handleAnimatedClose}
         aria-label="Close projects panel"
-        className="fixed top-6 right-6 md:top-10 md:right-10 z-[100] bg-black text-white px-6 py-3 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-[#ff4103] transition-colors focus-visible:ring-2 focus-visible:ring-[#ff4103] focus-visible:outline-none"
+        className="fixed top-6 right-6 md:top-10 md:right-10 z-[100] flex items-center gap-3 bg-black text-white px-6 py-3.5 md:px-8 md:py-4 rounded-full transition-all duration-500 hover:bg-[#ff4103] group focus-visible:ring-2 focus-visible:ring-[#ff4103] focus-visible:outline-none"
       >
-        Close [X]
+        <svg 
+          className="w-4 h-4 transition-transform duration-500 group-hover:rotate-90" 
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span className="text-[10px] md:text-xs font-bold tracking-widest uppercase mt-[2px]">
+          Close
+        </span>
       </button>
-
+      
       {/* DESKTOP VIEW */}
       <section aria-label="Desktop project gallery" className="hidden xl:flex flex-col w-full h-[200vh] overflow-hidden" ref={desktopMasterRef}>
         <div className="w-full h-screen shrink-0 flex">
@@ -176,7 +312,7 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
             {rightColumnProjects.map((project) => (
               <div key={`right-${project.id}`} className="w-full h-screen shrink-0 flex flex-col justify-center px-12 xl:px-24 border-b-[1px] border-zinc-200">
                 <div className="max-w-xl">
-                  <span className="text-[#ff4103] font-bold text-xl mb-4 block">
+                  <span className="text-[#ff4103] font-bold text-2xl mb-4 block">
                     Project {project.id}
                   </span>
                   <h2 className="text-5xl xl:text-7xl font-black uppercase tracking-tighter text-zinc-900 mb-8 leading-[0.9]">
@@ -186,12 +322,12 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
                     {project.description}
                   </p>
                   <div className="mb-12">
-                    <h3 className="text-xs font-bold tracking-widest uppercase text-zinc-400 mb-4">
+                    <h3 className="text-xl stardom font-bold tracking-widest uppercase text-zinc-400 mb-4">
                       Tech Stack
                     </h3>
                     <div className="flex flex-wrap gap-3">
                       {project.tech.map((t, i) => (
-                        <span key={i} className="px-4 py-2 bg-zinc-200 text-zinc-700 text-xs font-bold uppercase tracking-widest rounded-full">
+                        <span key={i} className="px-4 py-2 bg-zinc-200 text-zinc-700 text-sm font-bold uppercase tracking-widest rounded-full ">
                           {t}
                         </span>
                       ))}
@@ -200,7 +336,7 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
                   <a 
                     href={project.link} 
                     aria-label={`View ${project.title} project`}
-                    className="inline-flex items-center gap-3 text-sm font-bold tracking-widest uppercase text-[#ff4103] hover:text-zinc-900 transition-colors group focus-visible:ring-2 focus-visible:ring-[#ff4103] focus-visible:outline-none rounded-sm"
+                    className="inline-flex items-center gap-3 text-md  font-bold tracking-widest uppercase text-[#ff4103] hover:text-zinc-900 transition-colors group focus-visible:ring-2 focus-visible:ring-[#ff4103] focus-visible:outline-none rounded-sm"
                   >
                     View Project
                     <span className="group-hover:translate-x-2 transition-transform duration-300">
@@ -213,7 +349,6 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
           </div>
         </div>
 
-        {/* BOTTOM HALF: The Footer Component */}
         <div className="w-full h-screen shrink-0 relative z-30">
           <Footer />
         </div>
@@ -221,7 +356,8 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
 
       {/* MOBILE & IPAD VIEW */}
       <section aria-label="Mobile project gallery" className="flex xl:hidden flex-col w-full bg-[#F4F4F2]">
-        <div className="w-full pt-28 px-6 md:px-12 pb-8 border-b-[1.5px] border-zinc-300">
+        {/* ADDED: .mobile-header target class */}
+        <div className="mobile-header w-full pt-28 px-6 md:px-12 pb-8 border-b-[1.5px] border-zinc-300">
           <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-zinc-900 leading-[0.85]">
             Selected <br/> Works.
           </h2>
@@ -230,9 +366,10 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
         {projects.map((project, index) => (
           <article 
             key={`mobile-${project.id}`} 
-            className="w-full flex flex-col mb-16 border-b-[1.5px] border-zinc-300 pb-16"
+            className="w-full flex flex-col mb-16 border-b-[1.5px] border-zinc-300 pb-16 overflow-hidden"
           >
-            <div className={`w-full h-[50vh] md:h-[60vh] relative ${project.bgColor}`}>
+            {/* ADDED: .mobile-image target class */}
+            <div className={`mobile-image w-full h-[50vh] md:h-[60vh] relative ${project.bgColor}`}>
               <Image 
                 src={project.image} 
                 alt={project.title}
@@ -249,7 +386,8 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
               </div>
             </div>
 
-            <div className="w-full px-6 md:px-12 mt-10">
+            {/* ADDED: .mobile-details target class */}
+            <div className="mobile-details w-full px-6 md:px-12 mt-10">
               <span className="text-[#ff4103] font-bold text-sm tracking-widest uppercase mb-4 block">
                 Project {project.id}
               </span>
@@ -283,8 +421,9 @@ const Projects: React.FC<ProjectsProps> = ({ onClose }) => {
           </article>
         ))}
 
-        {/* Mobile footer naturally sits at the bottom */}
-        <Footer />
+        <div ref={mobileFooterRef} className="w-full">
+          <Footer />
+        </div>
       </section>
     </div>
   );
