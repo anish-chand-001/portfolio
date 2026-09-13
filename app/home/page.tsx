@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -94,16 +95,14 @@ const Homepage = () => {
         {!showProjects && (
           <motion.div
             key="hero-layer"
-            // CHANGED lg:flex-row to xl:flex-row
-            className="relative z-10 flex flex-col xl:flex-row w-full min-h-screen "
+            className="relative z-10 flex flex-col lg:flex-row lg:portrait:flex-col w-full min-h-screen"
           >
             {/* LEFT SIDE: HERO IMAGE */}
             <motion.div
               initial={{ y: 0 }}
               exit={{ y: "-100vh" }}
               transition={{ duration: 1.2, ease: premiumEasing }}
-              // CHANGED lg:w-[45%] to xl:w-[45%] and lg:h-screen to xl:h-screen
-              className="w-full xl:w-[45%] h-[60vh] xl:h-screen relative bg-zinc-200 shrink-0"
+              className="w-full lg:w-[45%] lg:portrait:w-full h-[75vh] lg:h-screen lg:portrait:h-[75vh] relative bg-zinc-200 shrink-0"
             >
               <Image
                 src="/images/portfolio-img.png"
@@ -112,7 +111,7 @@ const Homepage = () => {
                 height={1200}
                 priority
                 fetchPriority="high"
-                sizes="(max-width: 1280px) 100vw, 45vw"
+                sizes="(max-width: 1024px) 100vw, 45vw"
                 className="w-full h-full object-cover object-top grayscale-[20%] contrast-125"
               />
             </motion.div>
@@ -122,9 +121,7 @@ const Homepage = () => {
               initial={{ y: 0 }}
               exit={{ y: "100vh" }}
               transition={{ duration: 1.2, ease: premiumEasing }}
-              // CHANGED lg: breakpoints to xl: for widths, heights, and flex alignment
-              // Added xl:pl-24 xl:pr-48 to protect against FloatingBadge overlap
-              className="w-full xl:w-[55%] flex flex-col justify-center items-center mb-15 xl:items-start px-6 py-12 lg:px-16 xl:pl-24 xl:pr-48 xl:h-screen overflow-hidden bg-[#F4F4F2]"
+              className="w-full lg:w-[55%] lg:portrait:w-full flex flex-col justify-center items-center lg:items-start pl-8 pr-6 pt-12 pb-36 md:pl-12 md:pr-10 lg:portrait:pt-16 lg:pb-0 lg:portrait:pb-36 lg:pl-16 lg:pr-32 xl:pl-24 xl:pr-48 lg:h-screen lg:portrait:h-auto lg:overflow-hidden lg:portrait:overflow-visible bg-[#F4F4F2]"
             >
               <div className="w-full max-w-xl lg:max-w-2xl">
                 <section aria-label="Introduction" className="mb-8 xl:mb-12 2xl:mb-20">
