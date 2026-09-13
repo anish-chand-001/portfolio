@@ -10,7 +10,7 @@ const Projects = dynamic(() => import("../components/Projects"), {
   ssr: false,
 });
 
-const premiumEasing = [0.76, 0, 0.24, 1];
+const premiumEasing: [number, number, number, number] = [0.76, 0, 0.24, 1];
 
 const skillsData = [
   {
@@ -24,7 +24,6 @@ const skillsData = [
       "GSAP & Framer Motion",
     ],
   },
-
   {
     id: "backend",
     num: "02",
@@ -36,7 +35,6 @@ const skillsData = [
       "Authentication & Authorization",
     ],
   },
-
   {
     id: "ai",
     num: "03",
@@ -48,7 +46,6 @@ const skillsData = [
       "AI Agents & Tool Calling",
     ],
   },
-
   {
     id: "devops",
     num: "04",
@@ -75,23 +72,20 @@ const Homepage = () => {
       {/* =========================
           THE PROJECTS LAYER (z-0)
       ========================= */}
-     {/* =========================
-    PROJECTS LAYER
-========================= */}
-<AnimatePresence>
-  {showProjects && (
-    <motion.div
-      key="projects-layer"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-20 overflow-y-auto bg-[#F4F4F2]"
-    >
-      <Projects onClose={() => setShowProjects(false)} />
-    </motion.div>
-  )}
-</AnimatePresence>
+      <AnimatePresence>
+        {showProjects && (
+          <motion.div
+            key="projects-layer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-20 overflow-y-auto bg-[#F4F4F2]"
+          >
+            <Projects onClose={() => setShowProjects(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* =========================
           THE HERO CURTAINS (z-10)
@@ -100,14 +94,16 @@ const Homepage = () => {
         {!showProjects && (
           <motion.div
             key="hero-layer"
-            className="relative z-10 flex flex-col lg:flex-row w-full min-h-screen"
+            // CHANGED lg:flex-row to xl:flex-row
+            className="relative z-10 flex flex-col xl:flex-row w-full min-h-screen "
           >
             {/* LEFT SIDE: HERO IMAGE */}
             <motion.div
               initial={{ y: 0 }}
               exit={{ y: "-100vh" }}
-              transition={{ duration: 1.2, ease: premiumEasing as any }}
-              className="w-full lg:w-[45%] h-[60vh] lg:h-screen relative bg-zinc-200 shrink-0"
+              transition={{ duration: 1.2, ease: premiumEasing }}
+              // CHANGED lg:w-[45%] to xl:w-[45%] and lg:h-screen to xl:h-screen
+              className="w-full xl:w-[45%] h-[60vh] xl:h-screen relative bg-zinc-200 shrink-0"
             >
               <Image
                 src="/images/portfolio-img.png"
@@ -116,7 +112,7 @@ const Homepage = () => {
                 height={1200}
                 priority
                 fetchPriority="high"
-                sizes="(max-width: 1024px) 100vw, 45vw"
+                sizes="(max-width: 1280px) 100vw, 45vw"
                 className="w-full h-full object-cover object-top grayscale-[20%] contrast-125"
               />
             </motion.div>
@@ -125,16 +121,18 @@ const Homepage = () => {
             <motion.div
               initial={{ y: 0 }}
               exit={{ y: "100vh" }}
-              transition={{ duration: 1.2, ease: premiumEasing as any }}
-              className="w-full lg:w-[55%] flex flex-col justify-center items-center lg:items-start px-6 pt-16 pb-48 lg:pb-16 md:px-16 lg:px-24 lg:h-screen overflow-y-auto no-scrollbar bg-[#F4F4F2]"
+              transition={{ duration: 1.2, ease: premiumEasing }}
+              // CHANGED lg: breakpoints to xl: for widths, heights, and flex alignment
+              // Added xl:pl-24 xl:pr-48 to protect against FloatingBadge overlap
+              className="w-full xl:w-[55%] flex flex-col justify-center items-center mb-15 xl:items-start px-6 py-12 lg:px-16 xl:pl-24 xl:pr-48 xl:h-screen overflow-hidden bg-[#F4F4F2]"
             >
               <div className="w-full max-w-xl lg:max-w-2xl">
-                <section aria-label="Introduction" className="mb-16 lg:mb-24">
-                  <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85] mb-6 stardom">
+                <section aria-label="Introduction" className="mb-8 xl:mb-12 2xl:mb-20">
+                  <h1 className="text-6xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black tracking-tighter uppercase leading-[0.85] mb-4 2xl:mb-6 stardom">
                     Anish <br />
                     <span className="text-[#ff4103]">Chand.</span>
                   </h1>
-                  <p className="text-lg md:text-2xl text-zinc-600 font-medium leading-relaxed">
+                  <p className="text-base lg:text-lg xl:text-xl 2xl:text-2xl text-zinc-600 font-medium leading-snug 2xl:leading-relaxed">
                     Engineer of high-performance web applications, blending
                     scalable backend architectures with immersive frontend
                     experiences.
@@ -151,21 +149,21 @@ const Homepage = () => {
                         onClick={() => toggleSkill(skill.id)}
                         aria-expanded={activeSkill === skill.id}
                         aria-label={`${skill.title} skills — ${activeSkill === skill.id ? "collapse" : "expand"}`}
-                        className="w-full flex items-center justify-between py-6 group focus-visible:ring-2 focus-visible:ring-[#ff4103] focus-visible:outline-none rounded-sm"
+                        className="w-full flex items-center justify-between py-3 lg:py-4 xl:py-5 2xl:py-6 group focus-visible:ring-2 focus-visible:ring-[#ff4103] focus-visible:outline-none rounded-sm"
                       >
-                        <div className="flex items-baseline gap-6">
+                        <div className="flex items-baseline gap-4 2xl:gap-6">
                           <span
-                            className={`text-sm font-bold transition-colors ${activeSkill === skill.id ? "text-[#ff4103]" : "text-zinc-400"}`}
+                            className={`text-xs xl:text-sm font-bold transition-colors ${activeSkill === skill.id ? "text-[#ff4103]" : "text-zinc-400"}`}
                           >
                             {skill.num}
                           </span>
-                          <span className="text-3xl md:text-4xl font-extrabold tracking-tight uppercase text-zinc-900 group-hover:text-[#ff4103] transition-colors panchang">
+                          <span className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-extrabold tracking-tight uppercase text-zinc-900 group-hover:text-[#ff4103] transition-colors panchang">
                             {skill.title}
                           </span>
                         </div>
 
                         <span
-                          className="text-3xl text-zinc-900 font-light relative w-6 h-6 flex items-center justify-center"
+                          className="text-2xl xl:text-3xl text-zinc-900 font-light relative w-5 h-5 xl:w-6 xl:h-6 flex items-center justify-center"
                           aria-hidden="true"
                         >
                           <motion.span
@@ -192,6 +190,7 @@ const Homepage = () => {
                       <AnimatePresence>
                         {activeSkill === skill.id && (
                           <motion.div
+                            key={`skill-content-${skill.id}`}
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
@@ -201,11 +200,11 @@ const Homepage = () => {
                             }}
                             className="overflow-hidden"
                           >
-                            <div className="flex flex-wrap gap-x-8 gap-y-3 pb-8 pt-2">
+                            <div className="flex flex-wrap gap-x-4 2xl:gap-x-8 gap-y-2 2xl:gap-y-3 pb-4 2xl:pb-8 pt-1 2xl:pt-2">
                               {skill.items.map((item, index) => (
                                 <span
                                   key={index}
-                                  className="text-zinc-500 font-medium text-lg uppercase tracking-wide text-[0.9rem]"
+                                  className="text-zinc-500 font-medium text-xs xl:text-sm 2xl:text-[0.9rem] uppercase tracking-wide"
                                 >
                                   {item}
                                 </span>
@@ -226,11 +225,11 @@ const Homepage = () => {
 
       {/* =========================
           THE FLOATING BADGE
-          Only renders when the hero curtains are visible
       ========================= */}
       <AnimatePresence>
         {!showProjects && (
           <motion.div
+            key="floating-badge-wrapper"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
